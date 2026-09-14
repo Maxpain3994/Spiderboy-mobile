@@ -286,6 +286,31 @@
             display: flex;
         }
 
+        .stop-train-button {
+            display: none;
+            position: fixed;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 18px;
+            border: 2px solid white;
+            border-radius: 7px;
+            background: #e32636;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 190;
+        }
+
+        .stop-train-button.show {
+            display: block;
+        }
+
+        .stop-train-button:hover {
+            background: #ff4a55;
+        }
+
         .command-panel {
             display: none;
             position: fixed;
@@ -607,6 +632,7 @@
     <button class="pause-button" id="pauseButton" type="button">Pause</button>
     <button class="music-button" id="musicButton" type="button">Music: On</button>
     <button class="command-button" id="commandButton" type="button">Commands (T)</button>
+    <button class="stop-train-button" id="stopTrainButton" type="button">Stop Train</button>
     <div class="pause-overlay" id="pauseOverlay">PAUSED</div>
     <div class="command-panel" id="commandPanel">
         <label for="villainInput">Spawn Villain</label>
@@ -1711,6 +1737,7 @@
             train = null;
             trainEventActive = false;
             trainStopProgress = 0;
+            document.getElementById('stopTrainButton').classList.remove('show');
             spawnBoss(requestedType);
             bossTimer = 0;
             status.textContent = `${requestedType} spawned.`;
@@ -1912,6 +1939,12 @@
                 event.preventDefault();
                 canvas.setPointerCapture(event.pointerId);
                 player.startSwing(position.x, position.y, building);
+            } else {
+                event.preventDefault();
+                const web = player.shoot(position.x, position.y);
+                if (web) {
+                    webProjectiles.push(new WebProjectile(web.x, web.y, position.x, position.y));
+                }
             }
         });
 
@@ -2152,6 +2185,11 @@
 
         document.getElementById('pauseButton').addEventListener('click', togglePause);
         document.getElementById('commandButton').addEventListener('click', toggleCommandPanel);
+        document.getElementById('stopTrainButton').addEventListener('click', () => {
+            if (trainEventActive) {
+                trainStopProgress = 100;
+            }
+        });
 
         document.getElementById('spawnVillainButton').addEventListener('click', spawnRequestedVillain);
         document.getElementById('villainInput').addEventListener('keydown', (e) => {
@@ -2279,10 +2317,7 @@
                 player.y = train.y - 45;
                 player.vx = 0;
                 player.vy = 0;
-                if (keys[' ']) {
-                    train.drawWebs(player.x, player.y + 8);
-                    trainStopProgress = Math.min(100, trainStopProgress + 0.7 * timeScale);
-                }
+                train.drawWebs(player.x, player.y + 8);
                 train.draw();
                 player.draw();
 
@@ -2291,7 +2326,7 @@
                 ctx.fillStyle = '#fff';
                 ctx.font = 'bold 18px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('STOP THE TRAIN - HOLD SPACE', cameraX + canvas.width / 2, 43);
+                ctx.fillText('STOP THE TRAIN - TAP THE BUTTON', cameraX + canvas.width / 2, 43);
                 ctx.fillStyle = '#333';
                 ctx.fillRect(cameraX + canvas.width / 2 - 180, 57, 360, 14);
                 ctx.fillStyle = '#e32636';
@@ -2302,6 +2337,7 @@
                     train.stopped = true;
                     trainEventActive = false;
                     docOckTrainComplete = true;
+                    document.getElementById('stopTrainButton').classList.remove('show');
                     train = null;
                     if (boss) {
                         boss.health = 1;
@@ -2341,6 +2377,7 @@
                         trainEventActive = true;
                         trainStopProgress = 0;
                         train = new Train(player.x + canvas.width * 0.95, canvas.height - 170);
+                        document.getElementById('stopTrainButton').classList.add('show');
                         boss.health = 70;
                     } else if (!trainEventActive) {
                         boss.takeDamage(35);
