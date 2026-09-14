@@ -349,6 +349,27 @@
             background: #245b86;
         }
 
+        .spider-sense-button {
+            position: fixed;
+            display: none;
+            top: 232px;
+            right: 10px;
+            padding: 8px 14px;
+            background: #006b78;
+            color: white;
+            border: 2px solid #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        .spider-sense-button.active,
+        .spider-sense-button:hover {
+            background: #00a9bd;
+        }
+
         .command-panel label {
             display: block;
             margin-bottom: 7px;
@@ -521,7 +542,8 @@
             .pause-button,
             .quit-button,
             .music-button,
-            .command-button {
+            .command-button,
+            .spider-sense-button {
                 right: 6px;
                 padding: 5px 8px;
                 font-size: 11px;
@@ -531,9 +553,10 @@
             .quit-button { top: 88px; }
             .music-button { top: 118px; }
             .command-button { top: 148px; }
+            .spider-sense-button { top: 178px; }
 
             .command-panel {
-                top: 180px;
+                top: 210px;
                 right: 6px;
                 width: min(230px, calc(100vw - 12px));
             }
@@ -632,6 +655,7 @@
     <button class="pause-button" id="pauseButton" type="button">Pause</button>
     <button class="music-button" id="musicButton" type="button">Music: On</button>
     <button class="command-button" id="commandButton" type="button">Commands (T)</button>
+    <button class="spider-sense-button" id="spiderSenseButton" type="button">Spider Sense</button>
     <button class="stop-train-button" id="stopTrainButton" type="button">Stop Train</button>
     <div class="pause-overlay" id="pauseOverlay">PAUSED</div>
     <div class="command-panel" id="commandPanel">
@@ -828,10 +852,10 @@
 
         // Game States
         const gameState = {
-            health: 100,
-            maxHealth: 100,
-            webEnergy: 100,
-            maxWebEnergy: 100,
+            health: 150,
+            maxHealth: 150,
+            webEnergy: 150,
+            maxWebEnergy: 150,
             score: 0,
             criminalsCaught: 0,
             bananasCollected: 0,
@@ -868,10 +892,10 @@
             update(keys) {
                 // Horizontal movement
                 if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
-                    this.vx = -8;
+                    this.vx = -9;
                     this.facing = -1;
                 } else if (keys['ArrowRight'] || keys['d'] || keys['D']) {
-                    this.vx = 8;
+                    this.vx = 9;
                     this.facing = 1;
                 } else {
                     this.vx *= 0.85;
@@ -881,7 +905,7 @@
                 if (this.isSwinging) {
                     this.updateSwing();
                 } else {
-                    this.vy += 0.6; // Gravity
+                    this.vy += 0.5; // Gravity
                     this.y += this.vy;
                     this.x += this.vx;
 
@@ -922,7 +946,7 @@
 
                 // Web energy regeneration
                 if (gameState.webEnergy < gameState.maxWebEnergy) {
-                    gameState.webEnergy = Math.min(gameState.webEnergy + 0.3, gameState.maxWebEnergy);
+                    gameState.webEnergy = Math.min(gameState.webEnergy + 0.45, gameState.maxWebEnergy);
                 }
             }
 
@@ -937,7 +961,7 @@
 
             jump() {
                 if (this.isGrounded && !this.isSwinging) {
-                    this.vy = -13;
+                    this.vy = -14;
                     this.isGrounded = false;
                 }
             }
@@ -992,9 +1016,9 @@
             }
 
             shoot(targetX, targetY) {
-                if (this.webShootCooldown <= 0 && gameState.webEnergy >= 15) {
-                    gameState.webEnergy -= 15;
-                    this.webShootCooldown = 15;
+                if (this.webShootCooldown <= 0 && gameState.webEnergy >= 10) {
+                    gameState.webEnergy -= 10;
+                    this.webShootCooldown = 10;
                     return {
                         x: this.x,
                         y: this.y,
@@ -1226,9 +1250,9 @@
                 this.width = 70;
                 this.height = 80;
                 this.vx = 0;
-                this.health = 300;
-                this.maxHealth = 300;
-                this.attackCooldown = 60;
+                this.health = 240;
+                this.maxHealth = 240;
+                this.attackCooldown = 90;
                 this.phase = 0;
             }
 
@@ -1242,7 +1266,7 @@
                 this.attackCooldown -= timeScale;
 
                 if (this.attackCooldown <= 0) {
-                    this.attackCooldown = this.type === 'Green Goblin' ? 45 : 75;
+                    this.attackCooldown = this.type === 'Green Goblin' ? 70 : 105;
                     enemyBullets.push(new EnemyBullet(this.x, this.y, player.x, player.y));
                     if (this.type === 'Doc Ock') {
                         enemyBullets.push(new EnemyBullet(this.x - 28, this.y + 25, player.x, player.y));
@@ -1417,12 +1441,12 @@
                 this.y = y;
                 this.width = 25;
                 this.height = 35;
-                this.vx = -3 + Math.random() * 6;
+                this.vx = -2 + Math.random() * 4;
                 this.vy = 0;
-                this.health = 30;
-                this.maxHealth = 30;
+                this.health = 20;
+                this.maxHealth = 20;
                 this.lastShotTime = 0;
-                this.shootCooldown = 300; // 5 seconds in frames (at 60fps)
+                this.shootCooldown = 450; // 7.5 seconds in frames (at 60fps)
                 this.isStunned = false;
                 this.stunDuration = 0;
                 this.hiddenPlayerTime = 0;
@@ -1603,8 +1627,8 @@
             constructor(x, y, targetX, targetY) {
                 this.x = x;
                 this.y = y;
-                this.vx = (targetX - x) * 0.05;
-                this.vy = (targetY - y) * 0.05;
+                this.vx = (targetX - x) * 0.035;
+                this.vy = (targetY - y) * 0.035;
                 this.radius = 4;
                 this.lifetime = 400;
             }
@@ -1656,6 +1680,7 @@
         let trainStopProgress = 0;
         let trainEventActive = false;
         let docOckTrainComplete = false;
+        let spiderSenseTimer = null;
         let bossTimer = 0;
         let bossCooldown = 900;
 
@@ -2162,6 +2187,7 @@
             document.getElementById('pauseButton').style.display = 'block';
             document.getElementById('musicButton').style.display = 'block';
             document.getElementById('commandButton').style.display = 'block';
+            document.getElementById('spiderSenseButton').style.display = 'block';
             gameMusic.start();
             updateUI();
         });
@@ -2169,6 +2195,24 @@
         document.getElementById('musicButton').addEventListener('click', () => {
             const musicEnabled = gameMusic.toggle();
             document.getElementById('musicButton').textContent = musicEnabled ? 'Music: On' : 'Music: Off';
+        });
+
+        document.getElementById('spiderSenseButton').addEventListener('click', () => {
+            gameState.spiderSenseActive = true;
+            const button = document.getElementById('spiderSenseButton');
+            button.classList.add('active');
+            button.textContent = 'Spider Sense: On';
+
+            if (spiderSenseTimer) {
+                clearTimeout(spiderSenseTimer);
+            }
+
+            spiderSenseTimer = setTimeout(() => {
+                gameState.spiderSenseActive = false;
+                button.classList.remove('active');
+                button.textContent = 'Spider Sense';
+                spiderSenseTimer = null;
+            }, 10000);
         });
 
         function togglePause() {
@@ -2360,7 +2404,7 @@
                     
                     if (distance < 20) {
                         criminal.takeDamage(35);
-                        criminal.stun(60);
+                        criminal.stun(90);
                         gameState.score += 25;
                         webProjectiles.splice(i, 1);
                         i--;
@@ -2410,7 +2454,7 @@
                 // Check collision with player
                 const distance = getDistance(bullet.x, bullet.y, player.x, player.y);
                 if (distance < 20 && !isPlayerCoveredByRoof()) {
-                    gameState.health -= 10;
+                    gameState.health -= 5;
                     enemyBullets.splice(i, 1);
 
                     if (gameState.health <= 0) {
@@ -2443,6 +2487,11 @@
         }
 
         // Start game
+        gameLoop();
+    </script>
+</body>
+</html>
+
         gameLoop();
     </script>
 </body>
