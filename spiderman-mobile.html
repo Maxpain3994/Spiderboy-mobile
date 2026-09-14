@@ -295,6 +295,45 @@
             margin: 0;
         }
 
+        :fullscreen #gameContainer .touch-controls {
+            position: absolute;
+            display: flex;
+            left: 18px;
+            right: 18px;
+            bottom: 18px;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 120;
+        }
+
+        :fullscreen #gameContainer .touch-group {
+            display: flex;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        :fullscreen #gameContainer .touch-control {
+            width: 60px;
+            height: 60px;
+            border: 2px solid white;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 24px;
+            touch-action: none;
+            user-select: none;
+        }
+
+        :fullscreen #gameContainer .joystick {
+            width: 120px;
+            height: 120px;
+        }
+
+        :fullscreen #gameContainer .joystick-knob {
+            width: 56px;
+            height: 56px;
+        }
+
         .pause-overlay {
             display: none;
             position: fixed;
@@ -835,10 +874,6 @@
 
             <button class="start-button" id="startGameButton" type="button">Start Game</button>
         </div>
-    </div>
-
-    <div class="instructions">
-        W Jump | A D Move | SPACE to Shoot Web | Hold Left Click on a Building to Swing | Hold E for Slow-Motion Spider-Sense | Catch Criminals • Avoid Enemy Fire
     </div>
 
     <div class="game-over" id="gameOver">
