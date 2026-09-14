@@ -1879,6 +1879,13 @@
             const bossTypes = ['Sandman', 'Green Goblin', 'Doc Ock'];
             const type = requestedType || bossTypes[Math.floor(Math.random() * bossTypes.length)];
             const x = Math.max(120, Math.min(worldWidth - 120, player.x + 520));
+            trainEventActive = false;
+            train = null;
+            stopTrainButtonHeld = false;
+            player.vx = 0;
+            keys['ArrowLeft'] = false;
+            keys['a'] = false;
+            keys['A'] = false;
             boss = new Boss(type, x, canvas.height - 130);
             docOckTrainComplete = false;
         }
@@ -2526,7 +2533,7 @@
                 boss.draw();
             }
 
-            if (trainEventActive && train) {
+            if (trainEventActive === true && train !== null) {
                 train.update(timeScale);
                 player.endSwing();
                 player.x = train.getFrontX();
