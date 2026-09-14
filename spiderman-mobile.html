@@ -566,7 +566,7 @@
             }
 
             .touch-controls {
-                position: fixed;
+                position: absolute;
                 display: flex;
                 left: 10px;
                 right: 10px;
@@ -716,6 +716,17 @@
 <body>
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
+        <div class="touch-controls" aria-label="Touch controls">
+            <div class="touch-group joystick-group">
+                <div class="joystick" id="joystick" aria-label="Movement joystick">
+                    <div class="joystick-knob" id="joystickKnob"></div>
+                </div>
+            </div>
+            <div class="touch-group">
+                <button class="touch-control" data-key="w" type="button" aria-label="Jump">&#9650;</button>
+                <button class="touch-control" data-key=" " type="button" aria-label="Shoot web">&#9733;</button>
+            </div>
+        </div>
     </div>
 
     <div class="ui-container">
@@ -796,18 +807,6 @@
 
     <div class="instructions">
         W Jump | A D Move | SPACE to Shoot Web | Hold Left Click on a Building to Swing | Hold E for Slow-Motion Spider-Sense | Catch Criminals • Avoid Enemy Fire
-    </div>
-
-    <div class="touch-controls" aria-label="Touch controls">
-        <div class="touch-group joystick-group">
-            <div class="joystick" id="joystick" aria-label="Movement joystick">
-                <div class="joystick-knob" id="joystickKnob"></div>
-            </div>
-        </div>
-        <div class="touch-group">
-            <button class="touch-control" data-key="w" type="button" aria-label="Jump">&#9650;</button>
-            <button class="touch-control" data-key=" " type="button" aria-label="Shoot web">&#9733;</button>
-        </div>
     </div>
 
     <div class="game-over" id="gameOver">
@@ -1780,7 +1779,7 @@
         let docOckTrainComplete = false;
         let spiderSenseTimer = null;
         let bossTimer = 0;
-        let bossCooldown = 900;
+        let bossCooldown = 1500;
 
         gameState.spiderSenseActive = false;
 
@@ -1871,7 +1870,7 @@
             }
         }
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
             spawnCriminal();
         }
 
@@ -2415,9 +2414,9 @@
             if (!boss && bossTimer >= bossCooldown) {
                 spawnBoss();
                 bossTimer = 0;
-                bossCooldown = 900 + Math.random() * 600;
+                bossCooldown = 1500 + Math.random() * 900;
             }
-            if (!boss && spawnTimer > 120 + (gameState.level * 15)) { // Spawn every 2 seconds, faster with level
+            if (!boss && spawnTimer > 300 + (gameState.level * 30)) { // Spawn every 5 seconds, faster with level
                 spawnCriminal();
                 spawnTimer = 0;
             }
@@ -2540,7 +2539,7 @@
                 gameState.score += 500;
                 boss = null;
                 bossTimer = 0;
-                bossCooldown = 900 + Math.random() * 600;
+                bossCooldown = 1500 + Math.random() * 900;
             }
 
             // Update and draw enemy bullets
