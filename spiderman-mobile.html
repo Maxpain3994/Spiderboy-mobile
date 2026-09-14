@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fan Made Spider-Man Web Slinger</title>
+    <style><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fan Made Spider-Man Web Slinger</title>
     <style>
         * {
             margin: 0;
@@ -611,6 +617,102 @@
                 margin-top: 20px;
                 padding: 12px 25px;
                 font-size: 18px;
+            }
+        }
+
+        @media (max-width: 900px) and (orientation: landscape) {
+            #gameContainer {
+                width: 100vw;
+                height: 100vh;
+                margin: 0;
+                border-width: 2px;
+            }
+
+            .ui-container {
+                top: 4px;
+                left: 4px;
+                width: 125px;
+                padding: 5px;
+                font-size: 10px;
+            }
+
+            .stat-line {
+                margin: 2px 0;
+            }
+
+            .health-bar {
+                width: 58px;
+                height: 10px;
+            }
+
+            .score-display {
+                top: 4px;
+                right: 4px;
+                padding: 5px;
+                font-size: 11px;
+            }
+
+            .boss-display {
+                top: 76px;
+                left: 4px;
+                width: 145px;
+                padding: 4px;
+                font-size: 10px;
+            }
+
+            .pause-button,
+            .quit-button,
+            .music-button,
+            .command-button,
+            .spider-sense-button {
+                right: 4px;
+                padding: 4px 7px;
+                font-size: 10px;
+            }
+
+            .pause-button { top: 42px; }
+            .quit-button { top: 70px; }
+            .music-button { top: 98px; }
+            .command-button { top: 126px; }
+            .spider-sense-button { top: 154px; }
+
+            .command-panel {
+                top: 180px;
+                right: 4px;
+                width: 205px;
+                padding: 8px;
+            }
+
+            .stop-train-button {
+                top: 4px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .touch-controls {
+                bottom: 6px;
+                left: 6px;
+                right: 6px;
+            }
+
+            .joystick {
+                width: 88px;
+                height: 88px;
+            }
+
+            .joystick-knob {
+                width: 42px;
+                height: 42px;
+            }
+
+            .touch-control {
+                width: 46px;
+                height: 46px;
+                font-size: 18px;
+            }
+
+            .instructions {
+                display: none;
             }
         }
     </style>
@@ -2487,11 +2589,6 @@
         }
 
         // Start game
-        gameLoop();
-    </script>
-</body>
-</html>
-
         gameLoop();
     </script>
 </body>
