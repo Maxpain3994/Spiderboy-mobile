@@ -1824,6 +1824,7 @@
         let trainEventActive = false;
         let docOckTrainComplete = false;
         let spiderSenseTimer = null;
+        let stopTrainButtonHeld = false;
         let bossTimer = 0;
         let bossCooldown = 1500;
 
@@ -1905,6 +1906,7 @@
             train = null;
             trainEventActive = false;
             trainStopProgress = 0;
+            stopTrainButtonHeld = false;
             document.getElementById('stopTrainButton').classList.remove('show');
             spawnBoss(requestedType);
             bossTimer = 0;
@@ -2389,11 +2391,21 @@
 
         document.getElementById('pauseButton').addEventListener('click', togglePause);
         document.getElementById('commandButton').addEventListener('click', toggleCommandPanel);
-        document.getElementById('stopTrainButton').addEventListener('click', () => {
-            if (trainEventActive) {
-                trainStopProgress = 100;
-            }
+        const stopTrainButton = document.getElementById('stopTrainButton');
+        stopTrainButton.addEventListener('pointerdown', (event) => {
+            event.preventDefault();
+            stopTrainButtonHeld = true;
+            stopTrainButton.setPointerCapture(event.pointerId);
         });
+
+        const releaseStopTrainButton = (event) => {
+            event.preventDefault();
+            stopTrainButtonHeld = false;
+        };
+
+        stopTrainButton.addEventListener('pointerup', releaseStopTrainButton);
+        stopTrainButton.addEventListener('pointercancel', releaseStopTrainButton);
+        stopTrainButton.addEventListener('pointerleave', releaseStopTrainButton);
 
         document.getElementById('spawnVillainButton').addEventListener('click', spawnRequestedVillain);
         document.getElementById('villainInput').addEventListener('keydown', (e) => {
@@ -2530,16 +2542,21 @@
                 ctx.fillStyle = '#fff';
                 ctx.font = 'bold 18px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('STOP THE TRAIN - TAP THE BUTTON', cameraX + canvas.width / 2, 43);
+                ctx.fillText('STOP THE TRAIN - HOLD THE BUTTON', cameraX + canvas.width / 2, 43);
                 ctx.fillStyle = '#333';
                 ctx.fillRect(cameraX + canvas.width / 2 - 180, 57, 360, 14);
                 ctx.fillStyle = '#e32636';
                 ctx.fillRect(cameraX + canvas.width / 2 - 180, 57, trainStopProgress * 3.6, 14);
                 ctx.textAlign = 'left';
 
+                if (stopTrainButtonHeld) {
+                    trainStopProgress = Math.min(100, trainStopProgress + 0.7 * timeScale);
+                }
+
                 if (trainStopProgress >= 100) {
                     train.stopped = true;
                     trainEventActive = false;
+                    stopTrainButtonHeld = false;
                     docOckTrainComplete = true;
                     document.getElementById('stopTrainButton').classList.remove('show');
                     train = null;
