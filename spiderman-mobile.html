@@ -268,6 +268,26 @@
             background: #245b86;
         }
 
+        .fullscreen-button {
+            position: fixed;
+            display: none;
+            top: 72px;
+            right: 105px;
+            padding: 8px 14px;
+            background: #333;
+            color: white;
+            border: 2px solid #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 180;
+        }
+
+        .fullscreen-button:hover {
+            background: #245b86;
+        }
+
         .pause-overlay {
             display: none;
             position: fixed;
@@ -543,13 +563,15 @@
             .quit-button,
             .music-button,
             .command-button,
-            .spider-sense-button {
+            .spider-sense-button,
+            .fullscreen-button {
                 right: 6px;
                 padding: 5px 8px;
                 font-size: 11px;
             }
 
             .pause-button { top: 58px; }
+            .fullscreen-button { top: 58px; right: 72px; }
             .quit-button { top: 88px; }
             .music-button { top: 118px; }
             .command-button { top: 148px; }
@@ -660,13 +682,15 @@
             .quit-button,
             .music-button,
             .command-button,
-            .spider-sense-button {
+            .spider-sense-button,
+            .fullscreen-button {
                 right: 4px;
                 padding: 4px 7px;
                 font-size: 10px;
             }
 
             .pause-button { top: 42px; }
+            .fullscreen-button { top: 42px; right: 62px; }
             .quit-button { top: 70px; }
             .music-button { top: 98px; }
             .command-button { top: 126px; }
@@ -762,6 +786,7 @@
 
     <button class="quit-button" id="quitButton" type="button">Quit Game</button>
     <button class="pause-button" id="pauseButton" type="button">Pause</button>
+    <button class="fullscreen-button" id="fullscreenButton" type="button">Fullscreen</button>
     <button class="music-button" id="musicButton" type="button">Music: On</button>
     <button class="command-button" id="commandButton" type="button">Commands (T)</button>
     <button class="spider-sense-button" id="spiderSenseButton" type="button">Spider Sense</button>
@@ -2282,6 +2307,7 @@
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById('quitButton').style.display = 'block';
             document.getElementById('pauseButton').style.display = 'block';
+            document.getElementById('fullscreenButton').style.display = 'block';
             document.getElementById('musicButton').style.display = 'block';
             document.getElementById('commandButton').style.display = 'block';
             document.getElementById('spiderSenseButton').style.display = 'block';
@@ -2292,6 +2318,18 @@
         document.getElementById('musicButton').addEventListener('click', () => {
             const musicEnabled = gameMusic.toggle();
             document.getElementById('musicButton').textContent = musicEnabled ? 'Music: On' : 'Music: Off';
+        });
+
+        document.getElementById('fullscreenButton').addEventListener('click', async () => {
+            if (document.fullscreenElement) {
+                await document.exitFullscreen();
+            } else if (document.getElementById('gameContainer').requestFullscreen) {
+                await document.getElementById('gameContainer').requestFullscreen();
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            document.getElementById('fullscreenButton').textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen';
         });
 
         document.getElementById('spiderSenseButton').addEventListener('click', () => {
