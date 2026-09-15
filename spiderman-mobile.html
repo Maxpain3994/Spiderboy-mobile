@@ -276,16 +276,23 @@
 
         :fullscreen #gameContainer {
             width: 100vw;
-            height: 100vh;
+            height: 100dvh;
             max-height: none;
             margin: 0;
         }
 
         .fullscreen-mode #gameContainer {
             width: 100vw;
-            height: 100vh;
+            height: 100dvh;
             max-height: none;
             margin: 0;
+        }
+
+        @supports not (height: 100dvh) {
+            :fullscreen #gameContainer,
+            .fullscreen-mode #gameContainer {
+                height: -webkit-fill-available;
+            }
         }
 
         :fullscreen #gameContainer .touch-controls {
